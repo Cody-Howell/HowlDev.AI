@@ -52,25 +52,22 @@ public class NeuronTests {
             .Throws<Exception>()
             .WithMessage("Input neuron count is not the same as weight initalization. Found lengths 2 and 3.");
     }
-}
-public class MultilayerNeuronLayerTests {
-    [Test]
-    public async Task ThreeLayerTests() {
-        NeuronLayer layer1 = new([new Neuron([], 1.0), new Neuron([], -1.0), new Neuron([], 3.0)]);
-        NeuronLayer layer2 = new([new Neuron([1.0, 1.0, 1.0], 1.0), new Neuron([1.0, 1.0, 1.0], 2.0)]);
-        NeuronLayer layer3 = new([new Neuron([1.0, 1.0], 1.0)]);
-        layer2.CalculateLayer(layer1, NeuronActivations.GetFunction(ActivationFunctionKind.Identity));
-        layer3.CalculateLayer(layer2, NeuronActivations.GetFunction(ActivationFunctionKind.Identity));
-        await Assert.That(layer3.Values[0]).IsEqualTo(10.0);
-    }
 
     [Test]
-    public async Task ThreeLayersOutOfOrderThrowsError() {
-        NeuronLayer layer1 = new([new Neuron([], 1.0), new Neuron([], -1.0), new Neuron([], 3.0)]);
-        NeuronLayer layer2 = new([new Neuron([1.0, 1.0, 1.0], 1.0), new Neuron([1.0, 1.0, 1.0], 2.0)]);
-        NeuronLayer layer3 = new([new Neuron([1.0, 1.0], 1.0)]);
-        await Assert.That(() => layer3.CalculateLayer(layer2, NeuronActivations.GetFunction(ActivationFunctionKind.Identity)))
-            .Throws<InvalidOperationException>()
-            .WithMessage("Layer has not yet been calculated/was cleared.");
+    public async Task NeuronThrowsErrorWhenNotAnInputNeuronAndLayerIsNull() {
+        Neuron n = new([1.0, 1.0, 0.5], 0.0);
+        await Assert.That(() => n.CalculateValue(null, NeuronActivations.GetFunction(ActivationFunctionKind.Identity)))
+            .Throws<Exception>()
+            .WithMessage("Input layer is null when neuron is not an input neuron.");
+    }
+}
+public class ImplicitNeuronTests {
+    [Test]
+    public async Task CanImplicitlyMakeANeuron1() {
+        Neuron n = ([1.0, 1.0, 0.5], 0.0);
+        await Assert.That(n.Bias).IsEqualTo(0.0);
+        await Assert.That(n.Weights[0]).IsEqualTo(1.0);
+        await Assert.That(n.Weights[1]).IsEqualTo(1.0);
+        await Assert.That(n.Weights[2]).IsEqualTo(0.5);
     }
 }
