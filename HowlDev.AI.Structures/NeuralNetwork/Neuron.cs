@@ -13,8 +13,9 @@ public readonly struct Neuron(double[] weights, double bias = 0.0) {
     /// </summary>
     /// <param name="layer">Previous layer to calculate off of</param>
     /// <param name="activation">Function to pass the final sum through</param>
+    /// <exception cref="ArgumentException"/>
     public double CalculateValue(NeuronLayer? layer, Func<double, double> activation) {
-        if (IsInputNeuron) return activation(bias); // Is an input neuron
+        if (IsInputNeuron) return activation(bias); 
         if (layer is null) throw new ArgumentException("Input layer is null when neuron is not an input neuron.");
         if (layer.Values.Length != weights.Length) throw new ArgumentException($"Input neuron count is not the same as weight initalization. Found lengths {layer.Values.Length} and {weights.Length}.");
 
@@ -23,5 +24,9 @@ public readonly struct Neuron(double[] weights, double bias = 0.0) {
             sum += layer.Values[i] * weights[i];
         }
         return activation(sum);
+    }
+
+    public static implicit operator Neuron((double[], double) tuple) {
+        return new Neuron(tuple.Item1, tuple.Item2);
     }
 }
