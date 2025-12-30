@@ -9,7 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TUnit" Version="1.7.0" />
+    <PackageReference Include="TUnit" Version="1.7.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HowlDev.AI.Structures\HowlDev.AI.Structures.csproj" />
   </ItemGroup>
 
 </Project>
