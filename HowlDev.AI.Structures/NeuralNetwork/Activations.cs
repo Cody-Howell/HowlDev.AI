@@ -1,6 +1,6 @@
 using HowlDev.AI.Structures.NeuralNetwork.Options;
 
-namespace HowlDev.AI.Structures.NeuralNetwork; 
+namespace HowlDev.AI.Structures.NeuralNetwork;
 
 public static class NeuronActivations {
     /// <summary>
@@ -19,7 +19,8 @@ public static class NeuronActivations {
                 if (parameter is null) throw new Exception("Parameter is required for LeakyReLU function.");
                 if (d >= 0.0) return d;
                 return d * (double)parameter;
-            },
+            }
+            ,
             _ => throw new Exception($"NeuronActivations has not yet made a function for the ActivationFunctionKind {kind}."),
         };
     }

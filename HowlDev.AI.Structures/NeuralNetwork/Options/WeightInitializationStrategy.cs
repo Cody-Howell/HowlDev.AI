@@ -1,7 +1,12 @@
-namespace HowlDev.AI.Structures.NeuralNetwork.Options; 
+namespace HowlDev.AI.Structures.NeuralNetwork.Options;
 
 public enum WeightInitializationStrategy {
-    Uniform,
-    Normal,
-    Constant
+    /// <summary>
+    /// Returns the Max.
+    /// </summary>
+    Constant,
+    /// <summary>
+    /// Returns a uniform distribution across the spectrum from the listed Min to the Max.
+    /// </summary>
+    Uniform
 }

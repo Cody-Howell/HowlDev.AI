@@ -6,10 +6,25 @@ public class SimpleNeuralNetwork {
     private NeuronLayer[] layers;
 
     public NeuronLayer[] Layers => [.. layers];
-    public NeuronLayer OutputLayer => layers[layers.Length -1];
+    public NeuronLayer OutputLayer => layers[^1];
 
     public SimpleNeuralNetwork(NeuronLayer[] _layers) {
         layers = _layers;
+    }
+
+    /// <summary>
+    /// Generates shapes for all the layers defined in the TopologyOptions using the strategy provided. <br/>
+    /// </summary>
+    public SimpleNeuralNetwork(NetworkTopologyOptions options, WeightInitializationOptions strategy) {
+        Func<double> weights = WeightInitialization.GetWeightGenerationTechnique(strategy);
+        int layerCount = options.HiddenLayerSizes.Length + 1; // +1 for output layer
+        layerCount += options.CreateInputLayer ? 1 : 0;
+        layers = new NeuronLayer[layerCount];
+
+        int index = 0;
+        if (options.CreateInputLayer) {
+            layers[index] = NeuronLayer.MakeLayer(options.InputCount, 0, weights, strategy.InitialBias);
+        }
     }
 
     /// <summary>

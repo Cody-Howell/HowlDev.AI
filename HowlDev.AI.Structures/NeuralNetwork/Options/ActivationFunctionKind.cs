@@ -1,4 +1,4 @@
-namespace HowlDev.AI.Structures.NeuralNetwork.Options; 
+namespace HowlDev.AI.Structures.NeuralNetwork.Options;
 
 public enum ActivationFunctionKind {
     Identity,

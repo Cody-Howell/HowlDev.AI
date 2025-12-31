@@ -54,3 +54,27 @@ public class MultilayerNeuronLayerTests {
             .WithMessage("Layer has not yet been calculated/was cleared.");
     }
 }
+public class NeuronLayerGenerationTests {
+    [Test]
+    public async Task CanGenerateAnInputLayer() {
+        NeuronLayer layer1 = NeuronLayer.MakeLayer(3, 0, () => 1.0, 2);
+        await Assert.That(layer1.Values.Length).IsEqualTo(3);
+        await Assert.That(layer1.Neurons[0].Weights.Length).IsEqualTo(0);
+        await Assert.That(layer1.Neurons[1].Weights.Length).IsEqualTo(0);
+        await Assert.That(layer1.Neurons[2].Weights.Length).IsEqualTo(0);
+        await Assert.That(layer1.Neurons[0].Bias).IsEqualTo(2);
+        await Assert.That(layer1.Neurons[1].Bias).IsEqualTo(2);
+        await Assert.That(layer1.Neurons[2].Bias).IsEqualTo(2);
+    }
+
+    [Test]
+    public async Task CanGenerateANormalLayer() {
+        NeuronLayer layer1 = NeuronLayer.MakeLayer(3, 2, () => 1.0, 2);
+        await Assert.That(layer1.Neurons.Length).IsEqualTo(3);
+        await Assert.That(layer1.Neurons[0].Weights.Length).IsEqualTo(2);
+        await Assert.That(layer1.Neurons[0].Weights[0]).IsEqualTo(1);
+        await Assert.That(layer1.Neurons[0].Weights[1]).IsEqualTo(1);
+        await Assert.That(layer1.Neurons[1].Weights.Length).IsEqualTo(2);
+        await Assert.That(layer1.Neurons[2].Weights.Length).IsEqualTo(2);
+    }
+}

@@ -71,3 +71,22 @@ public class ImplicitNeuronTests {
         await Assert.That(n.Weights[2]).IsEqualTo(0.5);
     }
 }
+public class NeuronGenerationTests {
+    [Test]
+    public async Task CanGenerateANeuron1() {
+        Neuron n = Neuron.MakeNeuron(0, () => 1.0, 1.0);
+        await Assert.That(n.Bias).IsEqualTo(1.0);
+        await Assert.That(n.Weights.Length).IsEqualTo(0);
+        await Assert.That(n.IsInputNeuron).IsEqualTo(true);
+    }
+
+    [Test]
+    public async Task CanGenerateANeuron2() {
+        Neuron n = Neuron.MakeNeuron(2, () => 1.0, 1.0);
+        await Assert.That(n.Bias).IsEqualTo(1.0);
+        await Assert.That(n.Weights.Length).IsEqualTo(2);
+        await Assert.That(n.Weights[0]).IsEqualTo(1.0);
+        await Assert.That(n.Weights[1]).IsEqualTo(1.0);
+        await Assert.That(n.IsInputNeuron).IsEqualTo(false);
+    }
+}
