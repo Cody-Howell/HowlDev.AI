@@ -53,6 +53,16 @@ public class MultilayerNeuronLayerTests {
             .Throws<InvalidOperationException>()
             .WithMessage("Layer has not yet been calculated/was cleared.");
     }
+
+    [Test]
+    public async Task TwoLayersAfterClearingOneThrowsError() {
+        NeuronLayer layer1 = new([([], 1.0), ([], -1.0), ([], 3.0)]);
+        layer1.Clear();
+        NeuronLayer layer2 = new([([1.0, 1.0, 1.0], 1.0), ([1.0, 1.0, 1.0], 2.0)]);
+        await Assert.That(() => layer2.CalculateLayer(layer1, NeuronActivations.GetFunction(ActivationFunctionKind.Identity)))
+            .Throws<InvalidOperationException>()
+            .WithMessage("Layer has not yet been calculated/was cleared.");
+    }
 }
 public class NeuronLayerGenerationTests {
     [Test]

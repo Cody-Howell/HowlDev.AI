@@ -2,7 +2,7 @@ namespace HowlDev.AI.Structures.NeuralNetwork.Options;
 
 public enum WeightInitializationStrategy {
     /// <summary>
-    /// Returns the Max.
+    /// Returns the Max for all requests.
     /// </summary>
     Constant,
     /// <summary>
