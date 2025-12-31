@@ -18,13 +18,19 @@ public class SimpleNeuralNetwork {
     public SimpleNeuralNetwork(NetworkTopologyOptions options, WeightInitializationOptions strategy) {
         Func<double> weights = WeightInitialization.GetWeightGenerationTechnique(strategy);
         int layerCount = options.HiddenLayerSizes.Length + 1; // +1 for output layer
-        layerCount += options.CreateInputLayer ? 1 : 0;
+        layerCount += options.CreateInputLayer ? 1 : 0; // Maybe +1 for input layer
         layers = new NeuronLayer[layerCount];
 
         int index = 0;
         if (options.CreateInputLayer) {
             layers[index] = NeuronLayer.MakeLayer(options.InputCount, 0, weights, strategy.InitialBias);
+            index++;
         }
+        for (int i = 0; i < options.HiddenLayerSizes.Length; i++) {
+            layers[index] = NeuronLayer.MakeLayer(options.HiddenLayerSizes[i], layers[index - 1].Neurons.Length, weights, strategy.InitialBias);
+            index++;
+        }
+        layers[index] = NeuronLayer.MakeLayer(options.OutputCount, layers[index - 1].Neurons.Length, weights, strategy.InitialBias);
     }
 
     /// <summary>

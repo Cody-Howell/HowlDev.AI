@@ -1,5 +1,8 @@
 namespace HowlDev.AI.Structures.NeuralNetwork.Options;
 
+/// <summary>
+/// Adjust Input sizes, hidden layer sizes, and output sizes.
+/// </summary>
 public sealed class NetworkTopologyOptions {
     /// <summary>
     /// Size of the input layer.

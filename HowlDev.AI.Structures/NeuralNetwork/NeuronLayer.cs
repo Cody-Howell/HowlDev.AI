@@ -44,7 +44,6 @@ public class NeuronLayer {
     /// <param name="previousLayerSize">Length of internal weights. Set to 0 if this is an input layer.</param>
     /// <param name="weightGen">Function to generate weights from</param>
     /// <param name="initBias">Bias for all the neurons</param>
-    /// <returns></returns>
     public static NeuronLayer MakeLayer(int size, int previousLayerSize, Func<double> weightGen, double initBias) {
         Neuron[] neurons = new Neuron[size];
         if (previousLayerSize == 0) {
