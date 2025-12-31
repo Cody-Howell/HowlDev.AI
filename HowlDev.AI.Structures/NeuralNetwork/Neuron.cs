@@ -4,7 +4,7 @@
 /// This Neuron holds a weight array and a bias value. Set the weight array to empty 
 /// if it is an input neuron, and assign the bias appropriately. 
 /// </summary>
-public readonly struct Neuron(double[] weights, double bias = 0.0) {
+public readonly struct Neuron(double[] weights, double bias = 0.0) : IEquatable<Neuron> {
     public double[] Weights => [.. weights];
     public double Bias => bias;
     public bool IsInputNeuron { get => weights.Length == 0; }
@@ -32,6 +32,27 @@ public readonly struct Neuron(double[] weights, double bias = 0.0) {
             weights[i] = weightGen();
         }
         return new(weights, bias);
+    }
+
+    public static Neuron FromTextFormat(string input) {
+        double[] values = [.. input.Split(' ').Select(d => Convert.ToDouble(d))];
+        return new Neuron(weights: values[1..], bias: values[0]);
+    }
+
+    public string ToTextFormat() {
+        string output = $"{bias}";
+        foreach (double weight in weights) {
+            output += $" {weight}";
+        }
+        return output;
+    }
+
+    public bool Equals(Neuron other) {
+        if (bias != other.Bias || weights.Length != other.Weights.Length) return false;
+        for (int i = 0; i < weights.Length; i++) {
+            if (weights[i] != other.Weights[i]) return false;
+        }
+        return true;
     }
 
     public static implicit operator Neuron((double[], double) tuple) {
