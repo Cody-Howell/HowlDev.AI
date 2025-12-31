@@ -6,6 +6,7 @@ public class SimpleNeuralNetwork {
     private NeuronLayer[] layers;
 
     public NeuronLayer[] Layers => [.. layers];
+    public NeuronLayer OutputLayer => layers[layers.Length -1];
 
     public SimpleNeuralNetwork(NeuronLayer[] _layers) {
         layers = _layers;

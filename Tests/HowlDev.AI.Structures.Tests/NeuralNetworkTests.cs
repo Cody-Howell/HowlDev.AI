@@ -11,7 +11,7 @@ public class NeuralNetworkTests {
             new NeuronLayer([([1.0], 0.0)])
             ]);
         n.CalculateLayers();
-        await Assert.That(n.Layers[1].Values[0]).IsEqualTo(1.0);
+        await Assert.That(n.OutputLayer.Values[0]).IsEqualTo(1.0);
     }
 
     [Test]
@@ -22,7 +22,7 @@ public class NeuralNetworkTests {
             new NeuronLayer([([2.0, 1.0], 0.0)])
             ]);
         n.CalculateLayers();
-        await Assert.That(n.Layers[2].Values[0]).IsEqualTo(1.0);
+        await Assert.That(n.OutputLayer.Values[0]).IsEqualTo(1.0);
     }
 
     [Test]
@@ -32,7 +32,7 @@ public class NeuralNetworkTests {
             new NeuronLayer([([2.0, 1.0], 0.0)])
             ]);
         n.CalculateLayers(inputLayer: new NeuronLayer([([], 1.0)]));
-        await Assert.That(n.Layers[1].Values[0]).IsEqualTo(1.0);
+        await Assert.That(n.OutputLayer.Values[0]).IsEqualTo(1.0);
     }
 
     [Test]
@@ -43,6 +43,6 @@ public class NeuralNetworkTests {
             new NeuronLayer([([2.0, 1.0], 0.0)])
             ]);
         n.CalculateLayers(kind: ActivationFunctionKind.ReLU);
-        await Assert.That(n.Layers[2].Values[0]).IsEqualTo(2.0);
+        await Assert.That(n.OutputLayer.Values[0]).IsEqualTo(2.0);
     }
 }
