@@ -19,8 +19,13 @@ public static class NeuronActivations {
                 if (parameter is null) throw new Exception("Parameter is required for LeakyReLU function.");
                 if (d >= 0.0) return d;
                 return d * (double)parameter;
-            }
-            ,
+            },
+            ActivationFunctionKind.SoftSign => (d) => {
+                return d / (1 + Math.Abs(d));
+            },
+            ActivationFunctionKind.Sigmoid => (d) => {
+                return 1 / (1 + Math.Pow(Math.E, -d));
+            },
             _ => throw new Exception($"NeuronActivations has not yet made a function for the ActivationFunctionKind {kind}."),
         };
     }

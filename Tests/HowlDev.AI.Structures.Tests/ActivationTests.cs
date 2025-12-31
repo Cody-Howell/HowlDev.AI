@@ -53,4 +53,26 @@ public class ActivationTests {
             .Throws<Exception>()
             .WithMessage("Parameter is required for LeakyReLU function.");
     }
+
+    [Test]
+    [Arguments(0, 0)]
+    [Arguments(1, 0.5)]
+    [Arguments(-1, -0.5)]
+    [Arguments(297.23, 0.999)]
+    [Arguments(-100, -0.999)]
+    public async Task SoftSign(double d, double exp) {
+        var func = NeuronActivations.GetFunction(ActivationFunctionKind.SoftSign);
+        await Assert.That(func(d) - exp).IsLessThan(0.01); // Is close enough
+    }
+
+    [Test]
+    [Arguments(0, 0.5)]
+    [Arguments(1, 1)]
+    [Arguments(-1, 0.26)]
+    [Arguments(297.23, 0.999)]
+    [Arguments(-100, 0)]
+    public async Task Sigmoid(double d, double exp) {
+        var func = NeuronActivations.GetFunction(ActivationFunctionKind.Sigmoid);
+        await Assert.That(func(d) - exp).IsLessThan(0.01);
+    }
 }
