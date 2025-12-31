@@ -1,6 +1,6 @@
 namespace HowlDev.AI.Structures.NeuralNetwork;
 
-public class NeuronLayer {
+public class NeuronLayer : IEquatable<NeuronLayer> {
     private Neuron[] neurons;
     public Neuron[] Neurons { get => neurons; }
     private double[]? values = null;
@@ -37,6 +37,20 @@ public class NeuronLayer {
         }
     }
 
+    public string ToTextFormat() {
+        return $"""
+        {string.Join('\n', neurons.Select(n => n.ToTextFormat()))}
+        """;
+    }
+
+    /// <summary>
+    /// Just expects a newline-separated list of neurons.
+    /// </summary>
+    public static NeuronLayer FromTextFormat(string input) {
+        Neuron[] n = [.. input.Split('\n').Select(v => Neuron.FromTextFormat(v))];
+        return new NeuronLayer(n);
+    }
+
     /// <summary>
     /// Creates a layer given the size and function required. 
     /// </summary>
@@ -56,5 +70,13 @@ public class NeuronLayer {
             }
         }
         return new(neurons);
+    }
+
+    public bool Equals(NeuronLayer? other) {
+        if (other is null || neurons.Length != other.neurons.Length) return false;
+        for (int i = 0; i < neurons.Length; i++) {
+            if (!neurons[i].Equals(other.neurons[i])) return false;
+        }
+        return true;
     }
 }

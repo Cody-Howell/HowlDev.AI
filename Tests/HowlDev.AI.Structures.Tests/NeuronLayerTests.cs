@@ -69,9 +69,9 @@ public class NeuronLayerGenerationTests {
     public async Task CanGenerateAnInputLayer() {
         NeuronLayer layer1 = NeuronLayer.MakeLayer(3, 0, () => 1.0, 2);
         await Assert.That(layer1.Values.Length).IsEqualTo(3);
-        await Assert.That(layer1.Neurons[0].Weights.Length).IsEqualTo(0);
-        await Assert.That(layer1.Neurons[1].Weights.Length).IsEqualTo(0);
-        await Assert.That(layer1.Neurons[2].Weights.Length).IsEqualTo(0);
+        await Assert.That(layer1.Neurons[0].IsInputNeuron).IsEqualTo(true);
+        await Assert.That(layer1.Neurons[1].IsInputNeuron).IsEqualTo(true);
+        await Assert.That(layer1.Neurons[2].IsInputNeuron).IsEqualTo(true);
         await Assert.That(layer1.Neurons[0].Bias).IsEqualTo(2);
         await Assert.That(layer1.Neurons[1].Bias).IsEqualTo(2);
         await Assert.That(layer1.Neurons[2].Bias).IsEqualTo(2);
@@ -86,5 +86,63 @@ public class NeuronLayerGenerationTests {
         await Assert.That(layer1.Neurons[0].Weights[1]).IsEqualTo(1);
         await Assert.That(layer1.Neurons[1].Weights.Length).IsEqualTo(2);
         await Assert.That(layer1.Neurons[2].Weights.Length).IsEqualTo(2);
+    }
+}
+public class NeuronLayerToTextTests {
+    [Test]
+    public async Task CanMakeAnInputLayer() {
+        NeuronLayer layer1 = NeuronLayer.MakeLayer(2, 0, () => 1.0, 2);
+        await Assert.That(layer1.ToTextFormat()).IsEqualTo("""
+            2
+            2
+            """);
+    }
+
+    [Test]
+    public async Task CanMakeALayer() {
+        NeuronLayer layer1 = NeuronLayer.MakeLayer(2, 3, () => 1.0, 2);
+        await Assert.That(layer1.ToTextFormat()).IsEqualTo("""
+            2 1 1 1
+            2 1 1 1
+            """);
+    }
+
+    [Test]
+    public async Task CanMakeAnInputLayerBack() {
+        NeuronLayer layer1 = NeuronLayer.FromTextFormat("""
+            2
+            3
+            """);
+        await Assert.That(layer1.Neurons.Length).IsEqualTo(2);
+        await Assert.That(layer1.Neurons[0].IsInputNeuron).IsEqualTo(true);
+        await Assert.That(layer1.Neurons[1].IsInputNeuron).IsEqualTo(true);
+        await Assert.That(layer1.Neurons[0].Bias).IsEqualTo(2.0);
+        await Assert.That(layer1.Neurons[1].Bias).IsEqualTo(3.0);
+    }
+
+    [Test]
+    public async Task CanMakeALayerBack() {
+        NeuronLayer layer1 = NeuronLayer.FromTextFormat("""
+            2 1 1 1
+            2 1 1 1
+            """);
+        await Assert.That(layer1.Neurons.Length).IsEqualTo(2);
+        await Assert.That(layer1.Neurons[0].Weights.Length).IsEqualTo(3);
+        await Assert.That(layer1.Neurons[1].Weights.Length).IsEqualTo(3);
+    }
+
+    [Test]
+    public async Task CanMakeAnInputLayerAndBack() {
+        NeuronLayer l1 = NeuronLayer.MakeLayer(2, 0, () => 1.0, 2);
+        NeuronLayer l2 = NeuronLayer.FromTextFormat(l1.ToTextFormat());
+        await Assert.That(l1.Equals(l2)).IsEqualTo(true);
+
+    }
+
+    [Test]
+    public async Task CanMakeALayerAndBack() {
+        NeuronLayer l1 = NeuronLayer.MakeLayer(2, 3, () => 1.0, 2);
+        NeuronLayer l2 = NeuronLayer.FromTextFormat(l1.ToTextFormat());
+        await Assert.That(l1.Equals(l2)).IsEqualTo(true);
     }
 }
