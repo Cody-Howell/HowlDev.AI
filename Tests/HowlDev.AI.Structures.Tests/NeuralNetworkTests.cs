@@ -65,6 +65,22 @@ public class NeuralNetworkGenerationTests {
         await Assert.That(n.OutputLayer.Neurons.Length).IsEqualTo(values.output);
     }
 
+    [Test]
+    public async Task CanGenerateWithoutInputLayer() {
+        NetworkTopologyOptions o1 = new() {
+            InputCount = 4,
+            CreateInputLayer = false,
+            HiddenLayerSizes = [2,3],
+            OutputCount = 1
+        };
+        WeightInitializationOptions o2 = new();
+        SimpleNeuralNetwork n = new(o1, o2);
+        await Assert.That(n.Layers.Length).IsEqualTo(3);
+        await Assert.That(n.Layers[0].Neurons.Length).IsEqualTo(2);
+        await Assert.That(n.Layers[1].Neurons.Length).IsEqualTo(3);
+        await Assert.That(n.OutputLayer.Neurons.Length).IsEqualTo(1);
+        await Assert.That(n.OutputLayer.Neurons[0].Weights.Length).IsEqualTo(3);
+    }
 }
 
 public static class MyTestDataSources {

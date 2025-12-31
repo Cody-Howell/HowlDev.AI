@@ -25,10 +25,17 @@ public class SimpleNeuralNetwork {
         if (options.CreateInputLayer) {
             layers[index] = NeuronLayer.MakeLayer(options.InputCount, 0, weights, strategy.InitialBias);
             index++;
-        }
-        for (int i = 0; i < options.HiddenLayerSizes.Length; i++) {
-            layers[index] = NeuronLayer.MakeLayer(options.HiddenLayerSizes[i], layers[index - 1].Neurons.Length, weights, strategy.InitialBias);
+            for (int i = 0; i < options.HiddenLayerSizes.Length; i++) {
+                layers[index] = NeuronLayer.MakeLayer(options.HiddenLayerSizes[i], layers[index - 1].Neurons.Length, weights, strategy.InitialBias);
+                index++;
+            }
+        } else {
+            layers[index] = NeuronLayer.MakeLayer(options.HiddenLayerSizes[0], options.InputCount, weights, strategy.InitialBias);
             index++;
+            for (int i = 1; i < options.HiddenLayerSizes.Length; i++) {
+                layers[index] = NeuronLayer.MakeLayer(options.HiddenLayerSizes[i], layers[index - 1].Neurons.Length, weights, strategy.InitialBias);
+                index++;
+            }
         }
         layers[index] = NeuronLayer.MakeLayer(options.OutputCount, layers[index - 1].Neurons.Length, weights, strategy.InitialBias);
     }
