@@ -2,7 +2,7 @@ using HowlDev.AI.Structures.NeuralNetwork.Options;
 
 namespace HowlDev.AI.Structures.NeuralNetwork;
 
-public class SimpleNeuralNetwork {
+public class SimpleNeuralNetwork : IEquatable<SimpleNeuralNetwork> {
     private NeuronLayer[] layers;
 
     public NeuronLayer[] Layers => [.. layers];
@@ -55,5 +55,21 @@ public class SimpleNeuralNetwork {
             layers[index].CalculateLayer(layers[index - 1], func);
             index++;
         }
+    }
+
+    public string ToTextFormat() {
+        return string.Join("\n---\n", layers.Select(l => l.ToTextFormat()));
+    }
+
+    public static SimpleNeuralNetwork FromTextFormat(string input) {
+        return new([.. input.Split("\n---\n").Select(NeuronLayer.FromTextFormat)]);
+    }
+
+    public bool Equals(SimpleNeuralNetwork? other) {
+        if (other is null || layers.Length != other.layers.Length) return false;
+        for (int i = 0; i < layers.Length; i++) {
+            if (!layers[i].Equals(other.layers[i])) return false;
+        }
+        return true;
     }
 }

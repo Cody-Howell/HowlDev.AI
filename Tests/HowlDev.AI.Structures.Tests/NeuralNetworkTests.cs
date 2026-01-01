@@ -82,6 +82,49 @@ public class NeuralNetworkGenerationTests {
         await Assert.That(n.OutputLayer.Neurons[0].Weights.Length).IsEqualTo(3);
     }
 }
+public class NeuralNetworkToTextTests {
+    [Test]
+    public async Task NetworkToText() {
+        SimpleNeuralNetwork n = new([
+            new NeuronLayer([([], 1.0)]),
+            new NeuronLayer([([1.0], 0.0), ([-1.0], 0.0)]),
+            new NeuronLayer([([2.0, 1.0], 0.0)])
+            ]);
+        await Assert.That(n.ToTextFormat()).IsEqualTo("""
+            1
+            ---
+            0 1
+            0 -1
+            ---
+            0 2 1
+            """);
+    }
+
+    [Test]
+    public async Task TextToNetwork() {
+        SimpleNeuralNetwork n = SimpleNeuralNetwork.FromTextFormat("""
+            1
+            ---
+            0 1
+            0 -1
+            ---
+            0 2 1
+            """);
+        await Assert.That(n.Layers.Length).IsEqualTo(3);
+        await Assert.That(n.Layers[1].Neurons.Length).IsEqualTo(2);
+    }
+
+    [Test]
+    public async Task NetworkFullCircle() {
+        SimpleNeuralNetwork n = new([
+            new NeuronLayer([([], 1.0)]),
+            new NeuronLayer([([1.0], 0.0), ([-1.0], 0.0)]),
+            new NeuronLayer([([2.0, 1.0], 0.0)])
+            ]);
+        SimpleNeuralNetwork n2 = SimpleNeuralNetwork.FromTextFormat(n.ToTextFormat());
+        await Assert.That(n.Equals(n2)).IsTrue();
+    }
+}
 
 public static class MyTestDataSources {
     public static IEnumerable<Func<NetworkCreation>> AdditionTestData() {

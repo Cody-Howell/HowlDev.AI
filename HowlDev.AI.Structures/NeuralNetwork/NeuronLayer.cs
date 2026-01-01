@@ -38,9 +38,7 @@ public class NeuronLayer : IEquatable<NeuronLayer> {
     }
 
     public string ToTextFormat() {
-        return $"""
-        {string.Join('\n', neurons.Select(n => n.ToTextFormat()))}
-        """;
+        return string.Join('\n', neurons.Select(n => n.ToTextFormat()));
     }
 
     /// <summary>
