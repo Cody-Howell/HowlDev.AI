@@ -70,7 +70,7 @@ public class NeuralNetworkGenerationTests {
         NetworkTopologyOptions o1 = new() {
             InputCount = 4,
             CreateInputLayer = false,
-            HiddenLayerSizes = [2,3],
+            HiddenLayerSizes = [2, 3],
             OutputCount = 1
         };
         WeightInitializationOptions o2 = new();
