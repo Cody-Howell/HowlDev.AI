@@ -57,6 +57,12 @@ public class SimpleNeuralNetwork : IEquatable<SimpleNeuralNetwork> {
         }
     }
 
+    public void VaryNeuronWeights(double variance, double? biasVariance = null) {
+        foreach (NeuronLayer layer in layers) {
+            layer.VaryNeuronWeights(variance, biasVariance);
+        }
+    }
+
     public string ToTextFormat() {
         return string.Join("\n---\n", layers.Select(l => l.ToTextFormat()));
     }

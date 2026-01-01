@@ -25,7 +25,7 @@ public static class NeuronActivations {
                 return d / (1 + Math.Abs(d));
             },
             ActivationFunctionKind.Sigmoid => (d) => {
-                return 1 / (1 + Math.Pow(Math.E, -d));
+                return 1 / (1 + Math.Exp(-d));
             },
             _ => throw new Exception($"NeuronActivations has not yet made a function for the ActivationFunctionKind {kind}."),
         };

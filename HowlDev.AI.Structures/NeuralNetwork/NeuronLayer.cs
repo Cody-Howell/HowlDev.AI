@@ -37,6 +37,10 @@ public class NeuronLayer : IEquatable<NeuronLayer> {
         }
     }
 
+    public void VaryNeuronWeights(double variance, double? biasVariance = null) {
+        neurons = [.. neurons.Select(a => a.VaryWeightsFromNeuron(variance, biasVariance))];
+    }
+
     public string ToTextFormat() {
         return string.Join('\n', neurons.Select(n => n.ToTextFormat()));
     }
