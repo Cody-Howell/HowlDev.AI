@@ -11,6 +11,7 @@ public static class NeuronActivations {
     /// <param name="parameter">Parameter to apply</param>
     /// <exception cref="Exception"></exception>
     public static Func<double, double> GetFunction(ActivationFunctionKind kind, double? parameter = null) {
+        #pragma warning disable format
         return kind switch {
             ActivationFunctionKind.Identity => (d) => d,
             ActivationFunctionKind.Tanh => Math.Tanh,
