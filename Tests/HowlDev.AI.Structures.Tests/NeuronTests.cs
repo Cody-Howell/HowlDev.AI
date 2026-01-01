@@ -169,3 +169,34 @@ public class NeuronToTextTests {
         await Assert.That(recreation.IsInputNeuron).IsEqualTo(false);
     }
 }
+public class RandomVarianceForNeuronsTests {
+    [Test]
+    public async Task CanVaryWeights() {
+        Neuron n = ([2.0, 1.0], 3.0);
+        Neuron n2 = n.VaryWeightsFromNeuron(1.0);
+
+        await Assert.That(n2.Weights[0]).IsBetween(1.0, 3.0);
+        await Assert.That(n2.Weights[1]).IsBetween(0.0, 2.0);
+        await Assert.That(n2.Bias).IsEqualTo(3.0);
+    }
+
+    [Test]
+    public async Task CanTechnicallyNotVaryWeights() {
+        Neuron n = ([2.0, 1.0], 3.0);
+        Neuron n2 = n.VaryWeightsFromNeuron(0.0);
+
+        await Assert.That(n2.Weights[0]).IsEqualTo(2.0);
+        await Assert.That(n2.Weights[1]).IsEqualTo(1.0);
+        await Assert.That(n2.Bias).IsEqualTo(3.0);
+    }
+
+    [Test]
+    public async Task CanVaryBias() {
+        Neuron n = ([2.0, 1.0], 3.0);
+        Neuron n2 = n.VaryWeightsFromNeuron(0.0, 1.0);
+
+        await Assert.That(n2.Weights[0]).IsEqualTo(2.0);
+        await Assert.That(n2.Weights[1]).IsEqualTo(1.0);
+        await Assert.That(n2.Bias).IsBetween(2.0, 4.0);
+    }
+}

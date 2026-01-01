@@ -34,6 +34,21 @@ public readonly struct Neuron(double[] weights, double bias = 0.0) : IEquatable<
         return new(weights, bias);
     }
 
+    /// <summary>
+    /// Randomly vary the weights +/- a given variance. Returns a new instance. 
+    /// </summary>
+    public Neuron VaryWeightsFromNeuron(double variance, double? biasVariance = null) {
+        double[] newWeights = new double[weights.Length];
+        for (int i = 0; i < weights.Length; i++) {
+            newWeights[i] = (Random.Shared.NextDouble() * 2 - 1) * variance + weights[i];
+        }
+        double newBias = bias;
+        if (biasVariance is not null) {
+            newBias += (Random.Shared.NextDouble() * 2 - 1) * (double)biasVariance;
+        }
+        return new(newWeights, newBias);
+    }
+
     public static Neuron FromTextFormat(string input) {
         double[] values = [.. input.Split(' ').Select(d => Convert.ToDouble(d))];
         return new Neuron(weights: values[1..], bias: values[0]);
