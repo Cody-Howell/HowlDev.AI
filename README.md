@@ -9,3 +9,4 @@ This is my first attempt at training a network, many things aren't very well tes
 0.0.1 - ??? (1/3/26 - ???)
 
 - Initialization and testing the genetic algorithm
+- (and later added the correct wiki link)

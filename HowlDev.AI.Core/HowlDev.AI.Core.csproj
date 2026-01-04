@@ -9,7 +9,7 @@
     <PackageTags>machine learning, networks</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Cody-Howell/HowlDev.AI</RepositoryUrl>
-		<PackageProjectUrl>https://wiki.codyhowell.dev/sim.ai</PackageProjectUrl>
+		<PackageProjectUrl>https://wiki.codyhowell.dev/ai</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>_HowlDevLogo.png</PackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
