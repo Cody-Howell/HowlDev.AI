@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <Authors>Howl Dev</Authors>
     <Description>Contains different training algorithms for use with networks of different types.</Description>
 		<Copyright>Copyright (c) Howl Dev 2025</Copyright>

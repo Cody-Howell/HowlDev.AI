@@ -35,6 +35,10 @@ public class GeneticAlgorithm<TRunner>(GeneticAlgorithmStrategy strategy, IFileW
             localResults = [.. localResults.OrderByDescending(a => a.id)];
             writer.WriteFile($"{DateTime.Now:s}-Gen-{i}", string.Join('\n', localResults.Select(a => $"{a.id}: {a.result}")));
 
+            foreach (var item in networks) {
+                writer.WriteFile($"Gen-{i}-Network-{item.Key}", item.Value.ToTextFormat());
+            }
+
             List<(int id, double score)> survivors = [];
             // Reassigns result value as the fitness score to cull by
             List<(int id, double score)> dead = [.. results.Select(
