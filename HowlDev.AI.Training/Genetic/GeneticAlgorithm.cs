@@ -21,7 +21,8 @@ public class GeneticAlgorithm<TRunner>
     private readonly Func<double, double, double, double> Lerp = (a, b, t) => a * (1 - t) + b * t;
 
     public GeneticAlgorithm(GeneticAlgorithmStrategy strategy, IFileWriter writer) {
-        this.strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
+        // The below is done to ensure the input layer is set to false.
+        this.strategy = new(strategy.GenerationStrategy, new(strategy.TopologyOptions.InputCount, strategy.TopologyOptions.HiddenLayerSizes, strategy.TopologyOptions.OutputCount) {CreateInputLayer = false}, strategy.InitializationOptions);
         this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
         networks = new ConcurrentDictionary<int, SimpleNeuralNetwork>();
         results = new ConcurrentDictionary<int, double>();
