@@ -19,7 +19,7 @@ public class NeuronLayer : IEquatable<NeuronLayer> {
             throw new ArgumentException("Not all neurons are the same type (input/other).");
         }
 
-        if (neurons.First().IsInputNeuron) {
+        if (neurons.Length > 0 && neurons.First().IsInputNeuron) {
             CalculateLayer(null, (d) => d);
         }
     }

@@ -50,11 +50,7 @@ public class NeuralNetworkGenerationTests {
     [Test]
     [MethodDataSource(typeof(MyTestDataSources), nameof(MyTestDataSources.AdditionTestData))]
     public async Task CanGenerateAppropriateSize(NetworkCreation values) {
-        NetworkTopologyOptions o1 = new() {
-            InputCount = values.input,
-            HiddenLayerSizes = values.hiddenLayers,
-            OutputCount = values.output
-        };
+        NetworkTopologyOptions o1 = new(values.input, values.hiddenLayers, values.output);
         WeightInitializationOptions o2 = new();
         SimpleNeuralNetwork n = new(o1, o2);
         await Assert.That(n.Layers.Length).IsEqualTo(2 + values.hiddenLayers.Length);
@@ -67,11 +63,8 @@ public class NeuralNetworkGenerationTests {
 
     [Test]
     public async Task CanGenerateWithoutInputLayer() {
-        NetworkTopologyOptions o1 = new() {
-            InputCount = 4,
+        NetworkTopologyOptions o1 = new(4, [2, 3], 1) {
             CreateInputLayer = false,
-            HiddenLayerSizes = [2, 3],
-            OutputCount = 1
         };
         WeightInitializationOptions o2 = new();
         SimpleNeuralNetwork n = new(o1, o2);
