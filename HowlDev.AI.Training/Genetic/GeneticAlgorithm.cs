@@ -2,6 +2,7 @@
 using HowlDev.AI.Structures.NeuralNetwork;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace HowlDev.AI.Training.Genetic;
 
@@ -36,6 +37,7 @@ public class GeneticAlgorithm<TRunner>
     public async Task StartTraining() {
         InitializeNetworks();
         for (int i = 0; i < generationStrategy.NumOfGenerations; i++) {
+            Console.WriteLine(networks.Count);
             Debug.Assert(networks.Count == totalNetworks);
 
             int[] randomizedIds = [.. networks.Keys.OrderBy(k => Random.Shared.Next())];
@@ -60,19 +62,20 @@ public class GeneticAlgorithm<TRunner>
             }
 
             List<(int id, double score)> survivors = [];
-            // Reassigns result value as the fitness score to cull by
-            List<(int id, double score)> dead = [.. results.Select(
-                (a, i) => (a.Key, Lerp((i / totalNetworks - 1) < 0.5 ? 1 : 0, 0.5, strategy.CullingStrategy.SelectionSoftness)))
-                .OrderByDescending(a => a.Item2)];
+            int index = 0;
+            List<(int id, double score)> dead = [.. results.OrderByDescending(a => a.Value)
+                .Select((a, k) => (a.Key, Lerp((index++ / (double)(totalNetworks - 1)) < 0.5 ? 1 : 0, 0.5, strategy.CullingStrategy.SelectionSoftness)))];
 
             int goal = (int)Math.Round((double)totalNetworks / 2);
 
-            for (int j = 0; j < localResults.Length; j++) {
-                if (Random.Shared.NextDouble() < localResults[j].result) {
-                    dead.Remove(localResults[j]);
-                    survivors.Add(localResults[j]);
+            for (int j = 0; j < dead.Count; j++) {
+                if (Random.Shared.NextDouble() < dead[j].score) {
+                    survivors.Add(dead[j]);
+                    dead.Remove(dead[j]);
+                    j--;
                 }
             }
+
             if (survivors.Count > goal) {
                 survivors = [.. survivors
                     .OrderByDescending(x => x.score)
@@ -81,10 +84,12 @@ public class GeneticAlgorithm<TRunner>
             if (survivors.Count < goal) {
                 int difference = goal - survivors.Count;
                 survivors.AddRange(dead.Take(difference));
+                dead = [.. dead[difference..]];
             }
             
             for (int j = 0; j < survivors.Count; j++) {
-                networks[currentId++] = GenerateNetwork(networks[survivors[j].id]);
+                SimpleNeuralNetwork network = GenerateNetwork(networks[survivors[j].id]);
+                networks.AddOrUpdate(currentId++, network, (_k, _e) => network);
             }
 
             foreach (var (id, score) in dead) {
