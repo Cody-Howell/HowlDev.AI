@@ -6,7 +6,12 @@ Then another project will get the Asteroids game and the Training class (which w
 
 This is my first attempt at training a network, many things aren't very well tested, and I don't have a local project I can use to see if my training algo throws any errors at all. So I may list multiple versions with something like "Fixing training algorithm" and just have a range instead. 
 
-0.0.1 - ??? (1/3/26 - ???)
+0.0.5 (1/4/26)
+
+- Got it working!
+- Added in a new Saving option for what networks you want to save; whether that be All, Survivors for each generation, or just the Best (whether or not they got culled by the end of the generation)
+
+0.0.1 - 0.0.4 (1/3/26 - 1/4/26)
 
 - Initialization and testing the genetic algorithm
     - Added in saving of the networks, since training is pointless if you can't get the network at the end...

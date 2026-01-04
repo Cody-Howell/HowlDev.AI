@@ -5,15 +5,15 @@ namespace HowlDev.AI.Training.Saving;
 /// </summary>
 public class SavingStrategy {
     /// <summary>
-    /// Determines what folder to output to, relative to the project root. 
-    /// </summary>
-    public string SavePath { get; set; } = "/output";
-    /// <summary>
-    /// Determines the filename in the output folder. 
+    /// Determines the filename in the output folder. Defaults to GenerationAndID.
     /// </summary>
     public FileNamingScheme NamingScheme { get; set; } = FileNamingScheme.GenerationAndID;
     /// <summary>
     /// Determines which character splits the different values from the <see cref="NamingScheme"/> parameter. 
     /// </summary>
     public char SchemeSeparator { get; set; } = '_';
+    /// <summary>
+    /// Determine which networks to send to the IFileWriter. Defaults to only saving Survivors.
+    /// </summary>
+    public NetworkSavingScheme SavingScheme {get;set;} = NetworkSavingScheme.Survivors;
 }

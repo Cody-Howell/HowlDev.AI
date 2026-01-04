@@ -1,5 +1,6 @@
 ﻿using HowlDev.AI.Core;
 using HowlDev.AI.Structures.NeuralNetwork;
+using HowlDev.AI.Training.Saving;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
@@ -13,6 +14,7 @@ public class GeneticAlgorithm<TRunner>
     private readonly ConcurrentDictionary<int, double> results;
     private int currentId;
     private int generation;
+    private readonly NetworkSavingScheme savingScheme;
     private readonly GenerationStrategy generationStrategy;
     private readonly int countPerGroup;
     private readonly int numberOfTicks;
@@ -28,6 +30,7 @@ public class GeneticAlgorithm<TRunner>
         results = new ConcurrentDictionary<int, double>();
         currentId = 1;
         generation = 1;
+        savingScheme = strategy.SavingStrategy.SavingScheme;
         generationStrategy = strategy.GenerationStrategy;
         countPerGroup = generationStrategy.CountPerGroup;
         numberOfTicks = generationStrategy.NumberOfTicks;
@@ -56,8 +59,10 @@ public class GeneticAlgorithm<TRunner>
             localResults = [.. localResults.OrderByDescending(a => a.id)];
             writer.WriteFile($"{DateTime.Now:s}-Gen-{i}", string.Join('\n', localResults.Select(a => $"{a.id}: {a.result}")));
 
-            foreach (var item in networks) {
-                writer.WriteFile($"Gen-{i}-Network-{item.Key}", item.Value.ToTextFormat());
+            if (savingScheme == NetworkSavingScheme.All) {
+                foreach (var item in networks) {
+                    writer.WriteFile($"Gen-{i}-Network-{item.Key}", item.Value.ToTextFormat());
+                }
             }
 
             List<(int id, double score)> survivors = [];
@@ -85,10 +90,21 @@ public class GeneticAlgorithm<TRunner>
                 survivors.AddRange(dead.Take(difference));
                 dead = [.. dead[difference..]];
             }
+
+            if (savingScheme == NetworkSavingScheme.Best) {
+                int bestNetwork = results.OrderByDescending(a => a.Value).First().Key;
+                writer.WriteFile($"Gen-{i}-Network-{bestNetwork}", networks[bestNetwork].ToTextFormat());
+            }
             
             int removed = 0;
             foreach (var (id, score) in dead) {
                 if (networks.TryRemove(id, out _)) removed++;
+            }
+
+            if (savingScheme == NetworkSavingScheme.Survivors) {
+                foreach (var item in networks) {
+                    writer.WriteFile($"Gen-{i}-Network-{item.Key}", item.Value.ToTextFormat());
+                }
             }
 
             for (int j = 0; j < survivors.Count; j++) {
