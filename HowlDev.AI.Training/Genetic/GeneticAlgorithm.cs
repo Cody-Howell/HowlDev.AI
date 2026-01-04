@@ -1,33 +1,53 @@
 ﻿using HowlDev.AI.Core;
 using HowlDev.AI.Structures.NeuralNetwork;
 using System.Collections.Concurrent;
-using System.Data;
+using System.Diagnostics;
 
 namespace HowlDev.AI.Training.Genetic;
 
-public class GeneticAlgorithm<TRunner>(GeneticAlgorithmStrategy strategy, IFileWriter writer)
+public class GeneticAlgorithm<TRunner>
     where TRunner : IGeneticRunner<int> {
-    private ConcurrentDictionary<int, SimpleNeuralNetwork> networks = [];
-    private ConcurrentDictionary<int, double> results = [];
-    private int currentId = 1;
-    private int generation = 1;
-    private GenerationStrategy generationStrategy = strategy.GenerationStrategy;
-    private int countPerGroup = strategy.GenerationStrategy.CountPerGroup;
-    private int numberOfTicks = strategy.GenerationStrategy.NumberOfTicks;
-    private int totalNetworks = strategy.GenerationStrategy.NumberOfGroups * strategy.GenerationStrategy.CountPerGroup;
+    private readonly GeneticAlgorithmStrategy strategy;
+    private readonly IFileWriter writer;
+    private readonly ConcurrentDictionary<int, SimpleNeuralNetwork> networks;
+    private readonly ConcurrentDictionary<int, double> results;
+    private int currentId;
+    private int generation;
+    private readonly GenerationStrategy generationStrategy;
+    private readonly int countPerGroup;
+    private readonly int numberOfTicks;
+    private readonly int totalNetworks;
     // provided by guess who
-    private Func<double, double, double, double> Lerp = (a, b, t) => a * (1 - t) + b * t;
+    private readonly Func<double, double, double, double> Lerp = (a, b, t) => a * (1 - t) + b * t;
 
+    public GeneticAlgorithm(GeneticAlgorithmStrategy strategy, IFileWriter writer) {
+        this.strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
+        this.writer = writer ?? throw new ArgumentNullException(nameof(writer));
+        networks = new ConcurrentDictionary<int, SimpleNeuralNetwork>();
+        results = new ConcurrentDictionary<int, double>();
+        currentId = 1;
+        generation = 1;
+        generationStrategy = strategy.GenerationStrategy;
+        countPerGroup = generationStrategy.CountPerGroup;
+        numberOfTicks = generationStrategy.NumberOfTicks;
+        totalNetworks = generationStrategy.NumberOfGroups * generationStrategy.CountPerGroup;
+    }
 
     public async Task StartTraining() {
         InitializeNetworks();
         for (int i = 0; i < generationStrategy.NumOfGenerations; i++) {
-            int[] randomizedIds = [.. networks.Select(a => a.Key)];
-            Random.Shared.Shuffle(randomizedIds);
+            Debug.Assert(networks.Count == totalNetworks);
+
+            int[] randomizedIds = [.. networks.Keys.OrderBy(k => Random.Shared.Next())];
 
             List<Task> tasks = [];
             for (int j = 0; j < generationStrategy.NumberOfGroups; j++) {
-                tasks.Add(Task.Run(() => RunGroup(randomizedIds[(j * countPerGroup)..(j * countPerGroup + countPerGroup)])));
+                int start = j * countPerGroup;
+                int end = Math.Min(start + countPerGroup, randomizedIds.Length);
+                int length = end - start;
+                var slice = new int[length];
+                Array.Copy(randomizedIds, start, slice, 0, length);
+                tasks.Add(Task.Run(() => RunGroup(slice)));
             }
             await Task.WhenAll(tasks);
 
@@ -67,23 +87,25 @@ public class GeneticAlgorithm<TRunner>(GeneticAlgorithmStrategy strategy, IFileW
                 networks[currentId++] = GenerateNetwork(networks[survivors[j].id]);
             }
 
-            for (int j = 0; j < dead.Count; j++) {
-                networks.Remove(dead[j].id, out _);
+            foreach (var (id, score) in dead) {
+                networks.TryRemove(id, out _);
             }
 
             results.Clear();
+            generation++;
         }
     }
 
     private void InitializeNetworks() {
         for (int i = 0; i < totalNetworks; i++) {
-            networks[currentId++] = GenerateNetwork();
+            SimpleNeuralNetwork network = GenerateNetwork();
+            networks.AddOrUpdate(currentId++, network, (_k, _e) => network);
         }
     }
 
     private SimpleNeuralNetwork GenerateNetwork(SimpleNeuralNetwork? offOf = null) {
         if (offOf is null) {
-            return new(strategy.TopologyOptions, strategy.InitializationOptions);
+            return new SimpleNeuralNetwork(strategy.TopologyOptions, strategy.InitializationOptions);
         } else {
             WeightAndBiasChange last = strategy.LearningSpeed.Changes.Reverse().First(a => a.generation <= generation).change;
             SimpleNeuralNetwork newNetwork = SimpleNeuralNetwork.FromTextFormat(offOf.ToTextFormat());
@@ -109,7 +131,8 @@ public class GeneticAlgorithm<TRunner>(GeneticAlgorithmStrategy strategy, IFileW
         }
 
         for (int i = 0; i < myNetworks.Length; i++) {
-            results.AddOrUpdate(ids[i], runner.GetEvaluation(ids[i]), (d, d2) => ids[i]);
+            double eval = runner.GetEvaluation(ids[i]);
+            results.AddOrUpdate(ids[i], eval, (_k, _old) => eval);
         }
     }
 }
