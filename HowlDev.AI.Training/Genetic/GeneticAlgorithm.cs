@@ -2,7 +2,6 @@
 using HowlDev.AI.Structures.NeuralNetwork;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace HowlDev.AI.Training.Genetic;
 
@@ -37,7 +36,6 @@ public class GeneticAlgorithm<TRunner>
     public async Task StartTraining() {
         InitializeNetworks();
         for (int i = 0; i < generationStrategy.NumOfGenerations; i++) {
-            Console.WriteLine(networks.Count);
             Debug.Assert(networks.Count == totalNetworks);
 
             int[] randomizedIds = [.. networks.Keys.OrderBy(k => Random.Shared.Next())];
@@ -62,9 +60,8 @@ public class GeneticAlgorithm<TRunner>
             }
 
             List<(int id, double score)> survivors = [];
-            int index = 0;
             List<(int id, double score)> dead = [.. results.OrderByDescending(a => a.Value)
-                .Select((a, k) => (a.Key, Lerp((index++ / (double)(totalNetworks - 1)) < 0.5 ? 1 : 0, 0.5, strategy.CullingStrategy.SelectionSoftness)))];
+                .Select((a, index) => (a.Key, Lerp((index / (double)(totalNetworks - 1)) < 0.5 ? 1 : 0, 0.5, strategy.CullingStrategy.SelectionSoftness)))];
 
             int goal = (int)Math.Round((double)totalNetworks / 2);
 
@@ -77,6 +74,7 @@ public class GeneticAlgorithm<TRunner>
             }
 
             if (survivors.Count > goal) {
+                dead.AddRange(survivors[goal..]);
                 survivors = [.. survivors
                     .OrderByDescending(x => x.score)
                     .Take(goal)];
@@ -87,13 +85,14 @@ public class GeneticAlgorithm<TRunner>
                 dead = [.. dead[difference..]];
             }
             
+            int removed = 0;
+            foreach (var (id, score) in dead) {
+                if (networks.TryRemove(id, out _)) removed++;
+            }
+
             for (int j = 0; j < survivors.Count; j++) {
                 SimpleNeuralNetwork network = GenerateNetwork(networks[survivors[j].id]);
                 networks.AddOrUpdate(currentId++, network, (_k, _e) => network);
-            }
-
-            foreach (var (id, score) in dead) {
-                networks.TryRemove(id, out _);
             }
 
             results.Clear();

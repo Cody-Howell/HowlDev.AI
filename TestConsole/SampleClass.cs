@@ -12,7 +12,7 @@ public class SampleClass : IGeneticRunner<int> {
     }
 
     public double[] GetRepresentation(int id) {
-        return [12.0, 3.0, 0.23];
+        return [12.0, 3.0, 0.23, 5, 2.4, 5];
     }
 
     public void PrepareAction(int id, List<double> outputs) {
