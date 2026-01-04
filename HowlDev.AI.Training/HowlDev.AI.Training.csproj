@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HowlDev.AI.Core\HowlDev.AI.Core.csproj" />
+    <ProjectReference Include="..\HowlDev.AI.Structures\HowlDev.AI.Structures.csproj" />
   </ItemGroup>
 
 </Project>

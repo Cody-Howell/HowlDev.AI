@@ -24,6 +24,11 @@ public class NeuronLayer : IEquatable<NeuronLayer> {
         }
     }
 
+    public NeuronLayer(double[] inputs) {
+        neurons = [];
+        values = inputs;
+    }
+
     public void Clear() {
         values = null;
     }
