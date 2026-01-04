@@ -19,4 +19,9 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="README.md" />
+    <None Include="../_HowlDevLogo.png" Pack="true" PackagePath="_HowlDevLogo.png" />
+  </ItemGroup>
+
 </Project>

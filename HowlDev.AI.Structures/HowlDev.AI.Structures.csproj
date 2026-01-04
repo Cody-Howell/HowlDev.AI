@@ -20,6 +20,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="README.md" />
+    <None Include="../_HowlDevLogo.png" Pack="true" PackagePath="_HowlDevLogo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\HowlDev.AI.Core\HowlDev.AI.Core.csproj" />
   </ItemGroup>
 
