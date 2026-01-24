@@ -33,4 +33,8 @@ public class GeneticAlgorithmStrategy(GenerationStrategy generation, NetworkTopo
     /// Sets the learning speed for the algorithm, based on generation.
     /// </summary>
     public LearningSpeed LearningSpeed { get; set; } = new();
+    /// <summary>
+    /// Set the function activation for the neurons. Defaults to <see cref="ActivationFunctionKind.Identity"/>.
+    /// </summary>
+    public ActivationFunctionKind FunctionKind { get; set; } = ActivationFunctionKind.Identity;
 }

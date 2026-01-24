@@ -1,6 +1,7 @@
 ﻿using HowlDev.AI.Core;
 using HowlDev.AI.Core.Classes;
 using HowlDev.AI.Structures.NeuralNetwork;
+using HowlDev.AI.Structures.NeuralNetwork.Options;
 using HowlDev.AI.Training.Saving;
 using System.Collections.Concurrent;
 using System.Diagnostics;
@@ -24,6 +25,7 @@ public class GeneticAlgorithm<TRunner>
     private readonly int countPerGroup;
     private readonly int numberOfTicks;
     private readonly int totalNetworks;
+    private readonly ActivationFunctionKind functionKind;
     // provided by guess who
     private readonly Func<double, double, double, double> Lerp = (a, b, t) => a * (1 - t) + b * t;
 
@@ -35,6 +37,7 @@ public class GeneticAlgorithm<TRunner>
         // The below is done to ensure the input layer is set to false.
         this.strategy = new(strategy.GenerationStrategy, new(strategy.TopologyOptions.InputCount, strategy.TopologyOptions.HiddenLayerSizes, strategy.TopologyOptions.OutputCount) { CreateInputLayer = false }, strategy.InitializationOptions);
         this.reader = reader ?? throw new ArgumentNullException(nameof(GeneticAlgorithm<TRunner>.reader));
+        functionKind = strategy.FunctionKind;
         networks = new ConcurrentDictionary<int, SimpleNeuralNetwork>();
         results = new ConcurrentDictionary<int, double>();
         currentId = 1;
@@ -161,7 +164,7 @@ public class GeneticAlgorithm<TRunner>
         for (int i = 0; i < numberOfTicks; i++) {
             for (int j = 0; j < myNetworks.Length; j++) {
                 double[] input = runner.GetRepresentation(ids[j]);
-                myNetworks[j].CalculateLayers(new NeuronLayer(input));
+                myNetworks[j].CalculateLayers(new NeuronLayer(input), functionKind);
                 runner.PrepareAction(ids[j], [.. myNetworks[j].OutputLayer.Values]);
             }
             runner.RunTick();
