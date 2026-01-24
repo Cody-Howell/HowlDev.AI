@@ -1,0 +1,15 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/HowlDev.AI.Structures.Tests/HowlDev.AI.Structures.Tests.csproj" />
+    <Project Path="Tests/HowlDev.AI.Training.Tests/HowlDev.AI.Training.Tests.csproj" />
+  </Folder>
+  <Project Path="HowlDev.AI.Core/HowlDev.AI.Core.csproj" />
+  <Project Path="HowlDev.AI.Structures/HowlDev.AI.Structures.csproj" />
+  <Project Path="HowlDev.AI.Training/HowlDev.AI.Training.csproj" />
+  <Project Path="TestConsole/TestConsole.csproj" />
+</Solution>

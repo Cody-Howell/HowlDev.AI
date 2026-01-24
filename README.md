@@ -6,6 +6,11 @@ Then another project will get the Asteroids game and the Training class (which w
 
 This is my first attempt at training a network, many things aren't very well tested, and I don't have a local project I can use to see if my training algo throws any errors at all. So I may list multiple versions with something like "Fixing training algorithm" and just have a range instead. 
 
+0.1.0 (1/23/26)
+
+- Making another attempt. I adjusted how the data comes out (I give a class instead of just, "Here's a file to write"), and we'll see if that works better. 
+- Added Parallel.For instead of awaiting tasks, I hope to see a performance improvement. 
+
 0.0.5 (1/4/26)
 
 - Got it working!
