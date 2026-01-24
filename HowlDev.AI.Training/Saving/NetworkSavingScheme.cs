@@ -1,7 +1,7 @@
-namespace HowlDev.AI.Training.Saving; 
+namespace HowlDev.AI.Training.Saving;
 
 /// <summary>
-/// Determines which networks to send to the FileWriter.
+/// Determines which networks to send to the ResultReader.
 /// </summary>
 public enum NetworkSavingScheme {
     /// <summary>
