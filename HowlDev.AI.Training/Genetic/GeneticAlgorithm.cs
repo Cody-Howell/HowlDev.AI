@@ -45,7 +45,7 @@ public class GeneticAlgorithm<TRunner>
 
             int[] randomizedIds = [.. networks.Keys.OrderBy(k => Random.Shared.Next())];
 
-            Parallel.For(0, generationStrategy.NumberOfGroups - 1, (j) => {
+            Parallel.For(0, generationStrategy.NumberOfGroups, (j) => {
                 int start = j * countPerGroup;
                 int end = Math.Min(start + countPerGroup, randomizedIds.Length);
                 int length = end - start;
