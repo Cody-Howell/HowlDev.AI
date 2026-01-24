@@ -7,6 +7,10 @@ using System.Diagnostics;
 
 namespace HowlDev.AI.Training.Genetic;
 
+/// <summary>
+/// Runs a genetic algorithm, creating random networks and testing them with the <c>TRunner</c>.
+/// </summary>
+/// <typeparam name="TRunner">Object that runs the simulation</typeparam>
 public class GeneticAlgorithm<TRunner>
     where TRunner : IGeneticRunner<int> {
     private readonly GeneticAlgorithmStrategy strategy;
@@ -23,6 +27,10 @@ public class GeneticAlgorithm<TRunner>
     // provided by guess who
     private readonly Func<double, double, double, double> Lerp = (a, b, t) => a * (1 - t) + b * t;
 
+    /// <summary>
+    /// Default constructor. Must provide a Strategy for the system and a Reader to get values out of the simulation.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"></exception>
     public GeneticAlgorithm(GeneticAlgorithmStrategy strategy, IResultReader reader) {
         // The below is done to ensure the input layer is set to false.
         this.strategy = new(strategy.GenerationStrategy, new(strategy.TopologyOptions.InputCount, strategy.TopologyOptions.HiddenLayerSizes, strategy.TopologyOptions.OutputCount) { CreateInputLayer = false }, strategy.InitializationOptions);
@@ -38,6 +46,9 @@ public class GeneticAlgorithm<TRunner>
         totalNetworks = generationStrategy.NumberOfGroups * generationStrategy.CountPerGroup;
     }
 
+    /// <summary>
+    /// Run the training system. Will likely take a long time, depending on settings. 
+    /// </summary>
     public void StartTraining() {
         InitializeNetworks();
         for (int i = 0; i < generationStrategy.NumOfGenerations; i++) {

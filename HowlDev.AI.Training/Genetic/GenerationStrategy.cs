@@ -1,5 +1,8 @@
 namespace HowlDev.AI.Training.Genetic;
 
+/// <summary>
+/// Set strategy for the Generations; number to run, groups, group size, and how many ticks to run. 
+/// </summary>
 public class GenerationStrategy {
     /// <summary>
     /// How many generations to run.

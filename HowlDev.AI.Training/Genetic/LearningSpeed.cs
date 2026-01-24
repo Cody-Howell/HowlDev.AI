@@ -1,15 +1,37 @@
 namespace HowlDev.AI.Training.Genetic;
 
+/// <summary>
+/// Update the Weight and Bias values based on the generation.
+/// </summary>
 public class LearningSpeed {
+    /// <summary>
+    /// Set an array of changes based on generation. Defaults to the following: 
+    /// <code> 
+    /// (0, new(0.5, 0.5)),
+    /// (500, new(0.25, 0.25)),
+    /// (1000, new(0.1, 0.1)),
+    /// (10000, new(0.01, 0.01))
+    /// </code>
+    /// </summary>
     public (int generation, WeightAndBiasChange change)[] Changes { get; set; } = [
-        (0, new() {WeightValue = 0.5, BiasValue = 0.5}),
-        (500, new() {WeightValue = 0.25, BiasValue = 0.25}),
-        (1000, new() {WeightValue = 0.1, BiasValue = 0.1}),
-        (10000, new() {WeightValue = 0.01, BiasValue = 0.01})
+        (0, new(0.5, 0.5)),
+        (500, new(0.25, 0.25)),
+        (1000, new(0.1, 0.1)),
+        (10000, new(0.01, 0.01))
     ];
 }
 
-public class WeightAndBiasChange {
-    public double WeightValue { get; set; }
-    public double BiasValue { get; set; }
+/// <summary>
+/// Class to hold different weight and bias values per generation.
+/// </summary>
+public class WeightAndBiasChange(double weightValue, double biasValue) {
+
+    /// <summary>
+    /// Weight value range. 
+    /// </summary>
+    public double WeightValue { get; set; } = weightValue;
+    /// <summary>
+    /// Bias value range. 
+    /// </summary>
+    public double BiasValue { get; set; } = biasValue;
 }
